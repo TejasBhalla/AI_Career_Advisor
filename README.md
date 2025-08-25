@@ -42,7 +42,66 @@ cd AI_Career_Advisor
 
 ### Frontend
 ```bash
-cd client
+cd frontend
 npm install
 ```
+
+### Backend
+```bash
+cd backend
+npm install
+```
+
+## **3. Environment Variables**
+
+Create a `.env` file inside `/backend` with:
+
+```env
+MONGO_URI=your_mongodb_url
+JWT_SECRET=your_jwt_secret
+REDIS_URL=your_redis_url
+OPENAI_API_KEY=your_openai_key
+OLLAMA_API_URL=http://localhost:11434/api
+```
+
+👉 **OLLAMA_API_URL** points to your local Ollama server.  
+By default, Ollama runs on `http://localhost:11434`, but you can change it if deployed remotely.
+
+---
+
+## **4. Run Ollama (Required for AI features)**
+
+Make sure Ollama is installed → [Download Ollama](https://ollama.ai)
+
+Start the Ollama service:
+```bash
+ollama serve
+```
+
+## 4. Run Ollama (Required for AI features)
+
+Pull the required model:
+```bash
+ollama pull gemma3:4b
+```
+
+# ✨ Features
+
+- 🔐 **Student Authentication** – Secure login/signup with JWT  
+- 🧾 **Profile Setup** – Students enter skills, experience, and interests  
+- 🎯 **AI Career Advisor** – Personalized career suggestions using AI  
+- 🛤️ **Skill Roadmap Generator** – AI + YouTube API for skill-learning roadmap  
+- 💼 **Internship Finder** – Matches internships to chosen career path  
+- 📊 **Progress Tracker** – Visual progress of skill-building journey  
+
+---
+
+# 🔄 Technical Workflow
+
+1. **User Authentication** → JWT-secured login/signup  
+2. **Profile Setup** → Student enters skills, interests, and experience  
+3. **AI Career Advisor** → OpenAI/Ollama generates personalized career paths  
+4. **Skill Roadmap** → AI + YouTube API suggests courses with structured roadmap  
+5. **Internship Finder** → Scrapes job boards using Puppeteer + Cheerio  
+6. **Progress Tracker** → Tracks completed skills, courses, and internships  
 
