@@ -7,7 +7,7 @@ The AI Career & Skill Development Advisor is an intelligent web application that
 
 Frontend
 
-⚛️ React – UI framework
+⚛️ React – UI framework \n
 🎨 Tailwind CSS – Styling
 🌀 Framer Motion – Animations
 📊 Recharts – Data visualization
