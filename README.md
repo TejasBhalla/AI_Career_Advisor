@@ -59,9 +59,12 @@ Create a `.env` file inside `/backend` with:
 ```env
 MONGO_URI=your_mongodb_url
 JWT_SECRET=your_jwt_secret
+YOUTUBE_API_KEY=your_key
 REDIS_URL=your_redis_url
 OPENAI_API_KEY=your_openai_key
 OLLAMA_API_URL=http://localhost:11434/api
+ACCESS_TOKEN_SECRET=your_secret
+REFRESH_TOKEN_SECRET=your_strong_secret
 ```
 
 👉 **OLLAMA_API_URL** points to your local Ollama server.  
@@ -83,6 +86,18 @@ ollama serve
 Pull the required model:
 ```bash
 ollama pull gemma3:4b
+```
+# 🚀 Run Application
+
+### Backend
+```bash
+cd backend
+npm run dev
+```
+
+```bash
+cd frontend
+npm run dev
 ```
 
 # ✨ Features
