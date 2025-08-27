@@ -10,8 +10,9 @@ import {
   PolarRadiusAxis,
   Radar,
   Tooltip,
+  ResponsiveContainer,
 } from "recharts";
-import { useAuthStore } from "./store/useUserStore"; // <-- import zustand
+import { useAuthStore } from "./store/useUserStore";
 
 interface SkillProgress {
   name: string;
@@ -24,9 +25,8 @@ export default function Dashboard() {
   const [progress, setProgress] = useState<SkillProgress[]>([]);
   const navigate = useNavigate();
 
-  // Fetch user (from zustand) + progress
   useEffect(() => {
-    fetchUser(); // get latest session user
+    fetchUser();
   }, [fetchUser]);
 
   useEffect(() => {
@@ -38,7 +38,6 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  // Toggle skill completion
   const toggleSkill = async (skillName: string, completed: boolean) => {
     if (!user?._id) return;
     try {
@@ -52,16 +51,33 @@ export default function Dashboard() {
     }
   };
 
-  // Radar chart data
   const chartData = progress.map((s) => ({
     skill: s.name,
     user: s.completed ? 1 : 0,
     required: 1,
   }));
 
+  // ✅ Custom Tick Renderer to wrap or truncate text
+  const renderCustomTick = ({ x, y, payload }: any) => {
+    return (
+      <text
+        x={x}
+        y={y}
+        textAnchor="middle"
+        fill="#d1d5db"
+        fontSize="12"
+        dy={5}
+      >
+        {payload.value.length > 12
+          ? payload.value.substring(0, 12) + "…"
+          : payload.value}
+      </text>
+    );
+  };
+
   return (
     <div className="relative min-h-screen bg-gray-950 text-white overflow-hidden">
-      {/* background particles */}
+      {/* Animated background */}
       <Particles
         options={{
           background: { color: "#0f0f0f" },
@@ -82,16 +98,14 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-6xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent"
+          className="text-6xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg"
         >
           CareerAI Dashboard
         </motion.h1>
       </div>
 
-      {/* Content */}
       <div className="max-w-6xl mx-auto p-8 space-y-16">
         {!isLoggedIn ? (
-          // If not logged in
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -107,20 +121,19 @@ export default function Dashboard() {
             <div className="space-x-6">
               <button
                 onClick={() => navigate("/login")}
-                className="px-8 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 transition text-lg"
+                className="px-8 py-3 rounded-2xl bg-purple-600 hover:bg-purple-700 transition text-lg shadow-lg"
               >
                 Login
               </button>
               <button
                 onClick={() => navigate("/register")}
-                className="px-8 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-700 transition text-lg"
+                className="px-8 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-700 transition text-lg shadow-lg"
               >
                 Register
               </button>
             </div>
           </motion.div>
         ) : (
-          // If logged in
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -131,62 +144,76 @@ export default function Dashboard() {
               Hi, <span className="text-pink-400">{user?.name}</span> 👋
             </h2>
 
-            {/* Skills with checkboxes */}
-            <div>
-              <h3 className="text-2xl font-semibold mb-4">Your Roadmap</h3>
-              <div className="space-y-3">
-                {progress.map((skill) => (
-                  <label
-                    key={skill.name}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-gray-800 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={skill.completed}
-                      onChange={(e) => toggleSkill(skill.name, e.target.checked)}
-                      className="w-5 h-5 accent-pink-500"
-                    />
-                    <span className={skill.completed ? "line-through text-gray-400" : ""}>
-                      {skill.name}{" "}
-                      <span className="text-gray-400">(Month {skill.month})</span>
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            {/* Progress Cards */}
+            {/* Progress Cards */}
+{/* Progress Cards */}
+{/* Progress Cards */}
+<div>
+  <h3 className="text-2xl font-semibold mb-6">Your Roadmap</h3>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {progress.map((skill) => (
+      <motion.div
+        key={skill.name}
+        whileHover={{ scale: 1.05 }}
+        className={`p-6 rounded-2xl shadow-lg cursor-pointer transition relative overflow-hidden
+          ${
+            skill.completed
+              ? "bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500"
+              : "bg-gray-900 ring-1 ring-gray-700"
+          }`}
+        onClick={() => toggleSkill(skill.name, !skill.completed)}
+      >
+        {/* Wavy overlay when completed */}
+        {skill.completed && (
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/wavecut.png')] opacity-20 animate-pulse" />
+        )}
+
+        <h4
+          className={`text-xl font-medium relative z-10 ${
+            skill.completed
+              ? "bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent truncate"
+              : "text-white"
+          }`}
+        >
+          {skill.name}
+        </h4>
+
+        <p className="text-gray-200 mt-2 relative z-10">Month {skill.month}</p>
+      </motion.div>
+    ))}
+  </div>
+</div>
+
+
+
 
             {/* Radar Chart */}
             {progress.length > 0 && (
               <div className="p-6 rounded-2xl bg-gray-900 shadow-lg">
-                <h3 className="text-2xl font-semibold mb-6">Skill Completion</h3>
+                <h3 className="text-2xl font-semibold mb-6">Skill Analytics</h3>
                 <div className="flex justify-center">
-                  <RadarChart
-                    cx={300}
-                    cy={250}
-                    outerRadius={150}
-                    width={600}
-                    height={450}
-                    data={chartData}
-                  >
-                    <PolarGrid />
-                    <PolarAngleAxis dataKey="skill" />
-                    <PolarRadiusAxis angle={30} domain={[0, 1]} />
-                    <Radar
-                      name="User"
-                      dataKey="user"
-                      stroke="#22d3ee"
-                      fill="#22d3ee"
-                      fillOpacity={0.6}
-                    />
-                    <Radar
-                      name="Required"
-                      dataKey="required"
-                      stroke="#a855f7"
-                      fill="#a855f7"
-                      fillOpacity={0.3}
-                    />
-                    <Tooltip />
-                  </RadarChart>
+                  <ResponsiveContainer width="100%" height={450}>
+                    <RadarChart outerRadius="70%" data={chartData}>
+                      <PolarGrid stroke="#374151" />
+                      <PolarAngleAxis dataKey="skill" tick={renderCustomTick} />
+                      <PolarRadiusAxis angle={30} domain={[0, 1]} tick={false} />
+                      <Radar
+                        name="You"
+                        dataKey="user"
+                        stroke="#22d3ee"
+                        fill="#22d3ee"
+                        fillOpacity={0.6}
+                      />
+                      <Radar
+                        name="Target"
+                        dataKey="required"
+                        stroke="#a855f7"
+                        fill="#a855f7"
+                        fillOpacity={0.3}
+                      />
+                      <Tooltip />
+                    </RadarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             )}

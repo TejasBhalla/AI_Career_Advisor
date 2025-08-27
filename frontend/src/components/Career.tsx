@@ -1,12 +1,20 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useCareerStore } from "./store/useCareerStore";
 
 function Career() {
-  const [interest, setInterest] = useState("");
-  const [skill, setSkill] = useState("");
-  const [experience, setExperience] = useState("");
-  const [result, setResult] = useState<string | null>(null);
+  const {
+    interest,
+    skill,
+    experience,
+    result,
+    setInterest,
+    setSkill,
+    setExperience,
+    setResult,
+  } = useCareerStore();
+
   const [loading, setLoading] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
 
@@ -27,7 +35,7 @@ function Career() {
         experience,
         interests: [interest],
       });
-      setResult(res.data.advice);
+      setResult(res.data.advice); // ✅ persist result in Zustand
     } catch (err) {
       console.error(err);
       setResult("⚠️ Failed to fetch career advice. Please try again.");
@@ -58,7 +66,6 @@ function Career() {
           <h2 className="text-2xl font-semibold text-gray-100">
             Career Recommendation
           </h2>
-          {/* Fuschia accent line */}
           <div className="mt-2 h-1 w-16 mx-auto rounded-full bg-gradient-to-r from-fuchsia-500 to-indigo-500" />
         </div>
 
@@ -110,15 +117,22 @@ function Career() {
           >
             {result
               .split("\n")
-              .filter(line => line.trim() !== "")
+              .filter((line) => line.trim() !== "")
               .map((line, idx) => {
                 if (line.toLowerCase().includes("career path")) {
                   return (
-                    <h3 key={idx} className="text-lg font-semibold text-fuchsia-400">
+                    <h3
+                      key={idx}
+                      className="text-lg font-semibold text-fuchsia-400"
+                    >
                       {line}
                     </h3>
                   );
-                } else if (line.toLowerCase().includes("job roles") || line.toLowerCase().includes("required skills") || line.toLowerCase().includes("roadmap")) {
+                } else if (
+                  line.toLowerCase().includes("job roles") ||
+                  line.toLowerCase().includes("required skills") ||
+                  line.toLowerCase().includes("roadmap")
+                ) {
                   return (
                     <p key={idx} className="font-medium text-indigo-300 mt-3">
                       {line}
