@@ -1,26 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { useSkillsStore } from "./store/useSkillsStore.ts"; // ✅ import store
 
-interface RoadmapItem {
-  name: string;
-  completed: boolean;
-  month: number;
-}
-
-interface YouTubeVideo {
-  title: string;
-  description: string;
-  thumbnail: string;
-  videoId: string;
-  link: string;
-}
 
 function Skills({ userId: propUserId }: { userId?: string }) {
-  const [career, setCareer] = useState("");
-  const [suggestedSkills, setSuggestedSkills] = useState<string[]>([]);
-  const [roadmap, setRoadmap] = useState<RoadmapItem[]>([]);
-  const [videos, setVideos] = useState<Record<string, YouTubeVideo[]>>({});
+  const {
+    career,
+    suggestedSkills,
+    roadmap,
+    videos,
+    setCareer,
+    setSuggestedSkills,
+    setRoadmap,
+    setVideos,
+    reset,
+  } = useSkillsStore();
+
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<{ id: string; name: string } | null>(null);
 
@@ -53,30 +49,29 @@ function Skills({ userId: propUserId }: { userId?: string }) {
       setRoadmap(roadmapData);
 
       // 2️⃣ Fetch YouTube videos for each skill
-      const videosMap: Record<string, YouTubeVideo[]> = {};
+      const videosMap: Record = {};
 
       await Promise.all(
         skills.map(async (skill) => {
           try {
-          const videoRes = await axios.get(
-            `http://localhost:5000/api/courses/youtube/${encodeURIComponent(skill)}`,
-            { withCredentials: true }
-          );
-          videosMap[skill] = videoRes.data.courses || [];
-        }catch(err){
-          console.error(`Failed to fetch videos for ${skill}:`, err.message);
-           videosMap[skill] = []; 
-        }
-        
+            const videoRes = await axios.get(
+              `http://localhost:5000/api/courses/youtube/${encodeURIComponent(
+                skill
+              )}`,
+              { withCredentials: true }
+            );
+            videosMap[skill] = videoRes.data.courses || [];
+          } catch (err: any) {
+            console.error(`Failed to fetch videos for ${skill}:`, err.message);
+            videosMap[skill] = [];
+          }
         })
       );
 
       setVideos(videosMap);
     } catch (err) {
       console.error(err);
-      setSuggestedSkills([]);
-      setRoadmap([]);
-      setVideos({});
+      reset();
     } finally {
       setLoading(false);
     }
@@ -158,7 +153,9 @@ function Skills({ userId: propUserId }: { userId?: string }) {
                 </h3>
                 {Object.entries(videos).map(([skill, skillVideos]) => (
                   <div key={skill} className="mb-6">
-                    <h4 className="text-xl font-semibold text-white mb-2">{skill}</h4>
+                    <h4 className="text-xl font-semibold text-white mb-2">
+                      {skill}
+                    </h4>
                     <ul className="space-y-4">
                       {skillVideos.map((video, idx) => (
                         <li key={idx} className="flex items-center gap-4">
@@ -176,7 +173,9 @@ function Skills({ userId: propUserId }: { userId?: string }) {
                             >
                               {video.title}
                             </a>
-                            <p className="text-gray-300 text-sm">{video.description}</p>
+                            <p className="text-gray-300 text-sm">
+                              {video.description}
+                            </p>
                           </div>
                         </li>
                       ))}
