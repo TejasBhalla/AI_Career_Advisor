@@ -26,6 +26,8 @@
     "mongoose": "^8.17.2",
     "ollama": "^0.5.17",
     "openai": "^5.15.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "puppeteer": "^24.17.0"
   },
   "devDependencies": {
