@@ -8,11 +8,14 @@ import Internship from "./components/Internship";
 import Dashboard from "./components/Dashboard";
 import Skills from "./components/Skills";
 import Home from "./components/Home";
+import ResumeBuilder from "./pages/ResumeBuilder";
+
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <div className="mt-8 md:mt-16">
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -22,7 +25,9 @@ function App() {
           <Route path="/career" element={<Career />} />
           <Route path="/internships" element={<Internship />} />
           <Route path="/skills" element={<Skills />} />
+           <Route path="/resume-builder" element={<ResumeBuilder />} />
         </Routes>
+        </div>
       </Router>
     </AuthProvider>
   );
