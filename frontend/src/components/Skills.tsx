@@ -61,7 +61,6 @@ function Skills({ userId: propUserId }: { userId?: string }) {
     setSuggestedSkills,
     setRoadmap,
     setVideos,
-    reset,
   } = useSkillsStore();
 
   const [loading, setLoading] = useState(false);
@@ -120,7 +119,6 @@ function Skills({ userId: propUserId }: { userId?: string }) {
       setVideos(videosMap);
     } catch (err) {
       console.error(err);
-      reset();
     } finally {
       setLoading(false);
     }
@@ -264,7 +262,7 @@ function Skills({ userId: propUserId }: { userId?: string }) {
                 Creating personalized skill development plan for "<span className="text-violet-400">{career}</span>"...
               </p>
             </motion.div>
-          ) : hasSearched && suggestedSkills.length > 0 ? (
+          ) :  suggestedSkills.length > 0 ? (
             /* Results */
             <motion.div
               key="results"
@@ -426,7 +424,7 @@ function Skills({ userId: propUserId }: { userId?: string }) {
                 </motion.div>
               )}
             </motion.div>
-          ) : hasSearched && suggestedSkills.length === 0 ? (
+          ) :  suggestedSkills.length === 0 ? (
             /* No Results */
             <motion.div
               key="no-results"
