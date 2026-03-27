@@ -2,7 +2,9 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import redis from '../config/redis.js';
 import dotenv from 'dotenv';
-dotenv.config(); 
+dotenv.config();
+
+const frontendUrl = process.env.FRONTEND_URL || 'https://career-ai-0604.onrender.com';
 
 const generateTokens = (userId) => {
   const accessToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
@@ -17,14 +19,14 @@ const storeRefreshToken = async (userId, refreshToken) => {
 const setCookies = (res, accessToken, refreshToken) => {
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    secure: true,
     maxAge: 15 * 60 * 1000
   });
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+    secure: true,
     maxAge: 7 * 24 * 60 * 60 * 1000
   });
 };
@@ -84,8 +86,8 @@ export const refreshToken = async (req, res) => {
     const accessToken = jwt.sign({ userId: decoded.userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      secure: true,
       maxAge: 15 * 60 * 1000
     });
 
@@ -96,7 +98,7 @@ export const refreshToken = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
-  if (!req.user) return res.status(401).json({ message: "Not authenticated" });
+  if (!req.user) return res.status(401).json({ message: "Not authenticated les" });
   const user = await User.findById(req.user.id).select('-password');
   return res.status(200).json({ user });
 };
@@ -108,8 +110,13 @@ export const logout = async (req, res) => {
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
       await redis.del(decoded.userId);
     }
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
+    const cookieOptions = {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true
+    };
+    res.clearCookie('accessToken', cookieOptions);
+    res.clearCookie('refreshToken', cookieOptions);
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error });
@@ -125,7 +132,7 @@ export const googleCallback= async(req,res)=>{
       await storeRefreshToken(user._id, refreshToken);
       setCookies(res, accessToken, refreshToken);
 
-      res.redirect("http://localhost:5173/"); // frontend
+      res.redirect(`${frontendUrl}/`);
     } catch (error) {
       res.status(500).json({ message: "Google auth failed", error });
     }

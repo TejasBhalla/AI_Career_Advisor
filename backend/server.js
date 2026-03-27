@@ -10,16 +10,17 @@ import cookieParser from "cookie-parser";
 import internshipRoute from "./routes/internshipRoute.js";
 import passport from "./config/passport.js";
 import hackathonRoute from "./routes/hackathonRoute.js";
-import resumeRoutes from "./routes/resumeRoute.js";
+import resumeRoutes from "./routes/resumeRoutes.js";
 // Load environment variables
 dotenv.config();
 
 // Initialize app
 const app = express();
+const frontendUrl = process.env.FRONTEND_URL || 'https://career-ai-0604.onrender.com';
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // frontend URL
+  origin: frontendUrl,
   credentials: true
 }));
 app.use(express.json());
