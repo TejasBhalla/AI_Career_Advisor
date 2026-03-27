@@ -10,7 +10,7 @@ It analyzes **skills, experience, and interests** to provide personalized **care
 
 ### **Frontend**  
 - ⚛️ React – UI framework  
-- 🎨 Tailwind CSS – Styling  
+- 🎨 Tailwind CSS – Stylings  
 - 🌀 Framer Motion – Animations  
 - 📊 Recharts – Data visualization  
 - 🌌 Three.js, tsParticles, Vanta.js – Interactive graphics  
