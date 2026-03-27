@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 export interface Education {
@@ -26,7 +25,7 @@ export interface ResumeData {
 
 export const generateResume = async (formData: ResumeData): Promise<Blob> => {
   const response = await axios.post(
-    "http://localhost:5000/api/resume/generate",
+    "https://careerai-laww.onrender.com/api/resume/generate",
     formData,
     { responseType: "blob" }
   );

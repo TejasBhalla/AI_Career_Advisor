@@ -71,7 +71,7 @@ function Internship() {
     setHasSearched(true);
     
     try {
-      const response = await fetch(`http://localhost:5000/api/internships?skill=${encodeURIComponent(skill)}`);
+      const response = await fetch(`https://careerai-laww.onrender.com/api/internships?skill=${encodeURIComponent(skill)}`);
       const data = await response.json();
       
       // Map backend data to include skills array if needed
@@ -137,7 +137,7 @@ function Internship() {
       {/* Header */}
       <div className="text-center py-8 md:py-12">
         <motion.h1 
-          className="text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-violet-200 to-pink-200 bg-clip-text text-transparent mb-3"
+          className="text-4xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent mb-3"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
